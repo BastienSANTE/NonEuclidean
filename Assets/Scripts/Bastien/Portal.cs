@@ -1,71 +1,85 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Bastien {
-    public class Portal : MonoBehaviour
-    {
+    
+    public class Portal : MonoBehaviour {
+        /// <summary>
+        /// Base class for portals. The portal uses a render texture to display the "other side".
+        /// The camera is inferred from the children's components.
+        /// </summary>
+        
         //What information does a portal need ?
-        [Header("Essentials")]
-        [SerializeField] private Transform _inPortal; 
-        [SerializeField] private Transform _outPortal;              // Two surfaces to enter/exit
-        [SerializeField] private bool _isOneWay;                    // Self-explanatory
-        [SerializeField] private Camera _inCamera, _outCamera;      // Pair of cameras for the renderTextures
+        [Header("Essentials")] 
+        [SerializeField] private Portal _destination;   //Allows for portal chain creation. ends w/null
 
-        [Header("Debugging")]
-        public RawImage _inRenderUITex, _outRenderUITex;            //Sprites to convert the render textures for UI
-        [SerializeField] private bool _debugCanvas;                 // Is debug info enabled ?
+        private PortalCollider _portalCollider;         //Nested portal collider for events
+        
+        private Camera _playerCamera;                   //Self-explanatory. Inferred from the "Main Camera" tag
+        private Camera _portalCamera;                   //Self-explanatory. One per portal
 
-        public RenderTexture _inPortalTexture, _outPortalTexture;  // Pair of RenderTextures
-        private Transform _inPlane, _outPlane;                      // Actual teleportation planes
-        private Camera _mainCamera;                                 //Player Camera
-        private int _textureW, _textureH;                           //Texture dimensions
-    
-        private Vector3 mainCameraOfs, mainCameraRot;
-    
+        private RenderTexture _portalRenderTexture;     //Texture showing the destination portals' side
+        private Renderer _portalRenderer;
+        private MeshRenderer _portalMeshRenderer;
+
         private void Awake() {
-            _textureW = Camera.main.pixelWidth;     //Set W/H of texture to camera resolution
-            _textureH = Camera.main.pixelHeight;
+            _portalCollider = GetComponentInChildren<PortalCollider>();
         }
 
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start() {
-            _mainCamera = Camera.main;
-        
-            //
-            _inPlane = _inPortal.GetComponentInChildren<TeleportPlane>().gameObject.transform;
-            _outPlane = _outPortal.GetComponentInChildren<TeleportPlane>().gameObject.transform;
+        private void OnEnable() {
+            _portalCollider.OnPortalEntered += PortalEnter;
+            _portalCollider.OnPortalExited += PortalExit;
+        }
+
+        private void OnDisable() {
+            _portalCollider.OnPortalEntered -= PortalEnter;
+            _portalCollider.OnPortalExited -= PortalExit;
+        }
+
+        private void Start() {
+            // Waiting for Start() to link with other objects.
+            _playerCamera = Camera.main;            
+            _portalCollider = GetComponentInChildren<PortalCollider>();
+            _portalCamera = GetComponentInChildren<Camera>();
+            _portalRenderer = transform.Find("PortalPlane").GetComponent<Renderer>();
+            _portalMeshRenderer = transform.Find("PortalPlane").GetComponent<MeshRenderer>();
+
+            if (_destination == null) return;
             
-            //
-            _inCamera = _inPortal.GetComponentInChildren<Camera>();
-            _outCamera = _outPortal.GetComponentInChildren<Camera>();
+            CreateRenderingEnvironment();
+        }
+
+        private void Update() {
+            //Allows for portal chain creation. Offsets might look strange when the player is not
+            //in the right rooms, but lines up with 1 portal/room
+            if (_destination == null) return;
             
-            // 
-            _inPortalTexture  = new RenderTexture(_textureW, _textureH, 24);
-            _outPortalTexture = new RenderTexture(_textureW, _textureH, 24);
-
-            _inCamera.targetTexture = _outPortalTexture;
-            _outCamera.targetTexture = _inPortalTexture;
-        
-            _inPlane.GetComponent<Renderer>().material.SetTexture("_MainTex", _outCamera.targetTexture);
-            _outPlane.GetComponent<Renderer>().material.SetTexture("_MainTex", _inCamera.targetTexture);
+            Vector3 playerCamOffset = _playerCamera.transform.position - _portalCamera.transform.position;
+            _destination._portalCamera.transform.localPosition = playerCamOffset;
+            
+            Quaternion playerCamRotation = _playerCamera.transform.rotation;
+            _destination._portalCamera.transform.localRotation = playerCamRotation;
         }
 
-        // Update is called once per frame
-        void Update() {
-            mainCameraOfs = _mainCamera.transform.position - _inPortal.transform.position;
-            mainCameraRot = _mainCamera.transform.rotation.eulerAngles;
-
-            _inCamera.transform.localPosition = mainCameraOfs; 
-            _inCamera.transform.localRotation = Quaternion.Euler(mainCameraRot); 
-            _outCamera.transform.localPosition = mainCameraOfs;
-            _outCamera.transform.localRotation = Quaternion.Euler(mainCameraRot);
+        private void CreateRenderingEnvironment() {
+            //Render texture size varies on resolution. Using RHalf for memory considerations.
+            _portalRenderTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Default);
+            _destination._portalCamera.targetTexture = _portalRenderTexture;
+            
+            _portalRenderer.material.SetTexture("_MainTex", _portalRenderTexture);
         }
-    
-        private void OnGUI() {
-            if (_debugCanvas) {
-                _inRenderUITex.texture = _inPortalTexture;
-                _outRenderUITex.texture = _outPortalTexture;
-            }
+
+        private void PortalEnter(Collider player) {
+             if (_destination == null || player.CompareTag("Player") == false) return;
+             
+             Vector3 playerPortalOffset = transform.position - player.transform.position;
+             player.transform.position = _destination.transform.position;
+             Debug.Log($"POS: {player.transform.position}");
+        }
+
+        private void PortalExit(Collider player) {
+            Debug.Log($"POS: {player.transform.position}");
         }
     }
 }
