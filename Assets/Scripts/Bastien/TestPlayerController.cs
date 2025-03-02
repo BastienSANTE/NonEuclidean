@@ -11,11 +11,12 @@ namespace Bastien {
         private Vector3 movement;
         private Vector3 rotation;
         private bool _isGrounded;
-    
-    
+        
         private Rigidbody _playerRB;
+        
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start() {
+            Cursor.lockState = CursorLockMode.Locked;
             _playerRB = GetComponent<Rigidbody>();
         }
 

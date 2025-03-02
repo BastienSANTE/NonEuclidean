@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Bastien {
     
-    [RequireComponent(typeof(MeshCollider))]
+    [RequireComponent(typeof(BoxCollider))]
     
     public class PortalCollider : MonoBehaviour {
         // Pair of events to be called from Portal script

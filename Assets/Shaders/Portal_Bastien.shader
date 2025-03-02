@@ -8,7 +8,7 @@ Shader "Unlit/Portal_B"
 	{
 		Tags{ "Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent" }
 		Lighting Off
-		Cull Off
+		Cull Back
 		ZWrite On
 		ZTest Less
 		

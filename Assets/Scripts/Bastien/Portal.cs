@@ -1,5 +1,7 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 
 namespace Bastien {
@@ -20,7 +22,7 @@ namespace Bastien {
         private Camera _portalCamera;                   //Self-explanatory. One per portal
 
         private RenderTexture _portalRenderTexture;     //Texture showing the destination portals' side
-        private Renderer _portalRenderer;
+        private Renderer _portalRenderer;               //Portal
         private MeshRenderer _portalMeshRenderer;
 
         private void Awake() {
@@ -45,9 +47,11 @@ namespace Bastien {
             _portalRenderer = transform.Find("PortalPlane").GetComponent<Renderer>();
             _portalMeshRenderer = transform.Find("PortalPlane").GetComponent<MeshRenderer>();
 
-            if (_destination == null) return;
-            
-            CreateRenderingEnvironment();
+            if (!_destination) {
+                _portalMeshRenderer.enabled = false;
+            } else if (_destination) {
+                CreateRenderingEnvironment();
+            }
         }
 
         private void Update() {
@@ -63,23 +67,38 @@ namespace Bastien {
         }
 
         private void CreateRenderingEnvironment() {
-            //Render texture size varies on resolution. Using RHalf for memory considerations.
-            _portalRenderTexture = new RenderTexture(Screen.width, Screen.height, 24, RenderTextureFormat.Default);
-            _destination._portalCamera.targetTexture = _portalRenderTexture;
             
-            _portalRenderer.material.SetTexture("_MainTex", _portalRenderTexture);
+            //Render texture size varies on resolution. Using RHalf for memory considerations.
+            _portalRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+            _portalRenderTexture.Create();
+            AssetDatabase.CreateAsset(_portalRenderTexture, "Assets/Textures/TEMP/" + $"{this.GetInstanceID()}.rendertexture");
+
+            //Set the destination camera to output on the original portal's texture
+            _destination._portalCamera.targetTexture = this._portalRenderTexture;
+            this._portalRenderer.material.SetTexture("_MainTex", _portalRenderTexture);
         }
 
         private void PortalEnter(Collider player) {
              if (_destination == null || player.CompareTag("Player") == false) return;
              
              Vector3 playerPortalOffset = transform.position - player.transform.position;
-             player.transform.position = _destination.transform.position;
+             
+             player.transform.position = new Vector3(
+                 _destination.transform.position.x - playerPortalOffset.x,
+                 _destination.transform.position.y - playerPortalOffset.y,
+                 _destination.transform.position.z - playerPortalOffset.z);
+
+             player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, _destination.transform.rotation, 360f);
+             
+             //player.transform.rotation += _destination.transform.rotation;
              Debug.Log($"POS: {player.transform.position}");
+             Debug.Log($"ROT: {player.transform.rotation.eulerAngles}");
         }
 
         private void PortalExit(Collider player) {
+            if (_destination == null || player.CompareTag("Player") == false) return;
             Debug.Log($"POS: {player.transform.position}");
+            Debug.Log($"ROT: {player.transform.rotation.eulerAngles}");
         }
     }
 }
