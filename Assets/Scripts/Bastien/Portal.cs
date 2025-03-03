@@ -1,8 +1,4 @@
-using System;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
-using UnityEngine.UI;
 
 namespace Bastien {
     
@@ -78,24 +74,26 @@ namespace Bastien {
         private void PortalEnter(Collider player) {
              if (_destination == null || player.CompareTag("Player") == false) return;
              
-             Vector3 playerPortalOffset = transform.position - player.transform.position;
+             Vector3 playerEntryOffset = player.transform.position - transform.position;
+             Vector3 playerExitOffset = Vector3.Cross(playerEntryOffset, _destination.transform.forward);
              
              player.transform.position = new Vector3(
-                 _destination.transform.position.x - playerPortalOffset.x,
-                 _destination.transform.position.y - playerPortalOffset.y,
-                 _destination.transform.position.z - playerPortalOffset.z);
+                 _destination.transform.position.x + playerExitOffset.x,
+                 _destination.transform.position.y + playerExitOffset.y,
+                 _destination.transform.position.z + playerExitOffset.z);
 
-             player.transform.rotation = Quaternion.RotateTowards(player.transform.rotation, _destination.transform.rotation, 360f);
+             //Make it so that the player keeps facing the same way despite rotation of the room
+             player.transform.rotation = _destination.transform.rotation * player.transform.localRotation;
              
              //player.transform.rotation += _destination.transform.rotation;
-             Debug.Log($"POS: {player.transform.position}");
-             Debug.Log($"ROT: {player.transform.rotation.eulerAngles}");
+             Debug.Log($"WPOS: {player.transform.position} -- WROT: {player.transform.rotation.eulerAngles}\n" +
+                       $"LROT: {player.transform.localRotation.eulerAngles}");
         }
 
         private void PortalExit(Collider player) {
             if (_destination == null || player.CompareTag("Player") == false) return;
-            Debug.Log($"POS: {player.transform.position}");
-            Debug.Log($"ROT: {player.transform.rotation.eulerAngles}");
+            Debug.Log($"WPOS: {player.transform.position} -- WROT: {player.transform.rotation.eulerAngles}\n" +
+                      $"LROT: {player.transform.localRotation.eulerAngles}");
         }
     }
 }
