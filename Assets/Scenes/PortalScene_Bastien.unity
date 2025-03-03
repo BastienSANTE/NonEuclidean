@@ -612,6 +612,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 746977492}
     m_Modifications:
+    - target: {fileID: 182837873410414662, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 182837873410414662, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 182837873410414662, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 182837873410414662, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 182837873410414662, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 297187864676455979, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_Name
       value: Portal_Bastien
@@ -634,15 +654,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -654,6 +674,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305125236228996334, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305125236228996334, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305125236228996334, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305125236228996334, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4305125236228996334, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5876688838305287368, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
@@ -1263,6 +1303,10 @@ PrefabInstance:
     - target: {fileID: 2204236120365807456, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5876688838305287368, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
+      propertyPath: _destination
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7764515803880383338, guid: 58a951258e6fd7643aa371eabcfc45bb, type: 3}
       propertyPath: m_Enabled

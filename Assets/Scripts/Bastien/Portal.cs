@@ -79,7 +79,7 @@ namespace Bastien {
              
              player.transform.position = new Vector3(
                  _destination.transform.position.x + playerExitOffset.x,
-                 _destination.transform.position.y + playerExitOffset.y,
+                 _destination.transform.position.y,
                  _destination.transform.position.z + playerExitOffset.z);
 
              //Make it so that the player keeps facing the same way despite rotation of the room
