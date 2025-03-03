@@ -52,8 +52,8 @@ namespace Bastien {
             //in the right rooms, but lines up with 1 portal/room
             if (_destination == null) return;
             
-            Vector3 playerCamOffset = _playerCamera.transform.position - _portalCamera.transform.position;
-            _destination._portalCamera.transform.localPosition = playerCamOffset;
+            Vector3 playerCamOffset = _playerCamera.transform.position - transform.position;
+            _destination._portalCamera.transform.localPosition = Quaternion.AngleAxis(transform.rotation.y, Vector3.forward) * playerCamOffset;
             
             Quaternion playerCamRotation = _playerCamera.transform.rotation;
             _destination._portalCamera.transform.localRotation = playerCamRotation;
