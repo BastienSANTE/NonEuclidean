@@ -490,6 +490,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _destination: {fileID: 0}
+  _portalCollider: {fileID: 0}
+  _playerCamera: {fileID: 0}
+  _portalCamera: {fileID: 0}
+  _portalRenderTexture: {fileID: 0}
+  _portalRenderer: {fileID: 0}
+  _portalMeshRenderer: {fileID: 0}
 --- !u!1 &184844419
 GameObject:
   m_ObjectHideFlags: 0

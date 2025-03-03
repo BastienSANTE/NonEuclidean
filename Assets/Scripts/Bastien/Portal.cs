@@ -16,17 +16,21 @@ namespace Bastien {
         [Header("Essentials")] 
         [SerializeField] private Portal _destination;   //Allows for portal chain creation. ends w/null
 
-        private PortalCollider _portalCollider;         //Nested portal collider for events
-        
-        private Camera _playerCamera;                   //Self-explanatory. Inferred from the "Main Camera" tag
-        private Camera _portalCamera;                   //Self-explanatory. One per portal
-
-        private RenderTexture _portalRenderTexture;     //Texture showing the destination portals' side
-        private Renderer _portalRenderer;               //Portal
-        private MeshRenderer _portalMeshRenderer;
+        [SerializeField] private PortalCollider _portalCollider;         //Nested portal collider for events
+        [SerializeField] private Camera _playerCamera;                   //Self-explanatory. Inferred from the "Main Camera" tag
+        [SerializeField] private Camera _portalCamera;                   //Self-explanatory. One per portal
+        [SerializeField] private RenderTexture _portalRenderTexture;     //Texture showing the destination portals' side
+        [SerializeField] private Renderer _portalRenderer;               //Portal
+        [SerializeField] private MeshRenderer _portalMeshRenderer;
 
         private void Awake() {
             _portalCollider = GetComponentInChildren<PortalCollider>();
+
+            _playerCamera = Camera.main;            
+            _portalCollider = GetComponentInChildren<PortalCollider>();
+            _portalCamera = GetComponentInChildren<Camera>();
+            _portalRenderer = transform.Find("PortalPlane").GetComponent<Renderer>();
+            _portalMeshRenderer = transform.Find("PortalPlane").GetComponent<MeshRenderer>();
         }
 
         private void OnEnable() {
@@ -40,17 +44,10 @@ namespace Bastien {
         }
 
         private void Start() {
-            // Waiting for Start() to link with other objects.
-            _playerCamera = Camera.main;            
-            _portalCollider = GetComponentInChildren<PortalCollider>();
-            _portalCamera = GetComponentInChildren<Camera>();
-            _portalRenderer = transform.Find("PortalPlane").GetComponent<Renderer>();
-            _portalMeshRenderer = transform.Find("PortalPlane").GetComponent<MeshRenderer>();
-
-            if (!_destination) {
-                _portalMeshRenderer.enabled = false;
-            } else if (_destination) {
+            if (_destination) {
                 CreateRenderingEnvironment();
+            } else {
+                _portalMeshRenderer.enabled = false;
             }
         }
 
@@ -71,11 +68,11 @@ namespace Bastien {
             //Render texture size varies on resolution. Using RHalf for memory considerations.
             _portalRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
             _portalRenderTexture.Create();
-            AssetDatabase.CreateAsset(_portalRenderTexture, "Assets/Textures/TEMP/" + $"{this.GetInstanceID()}.rendertexture");
+            //AssetDatabase.CreateAsset(_portalRenderTexture, "Assets/Textures/TEMP/" + $"{this.GetInstanceID()}.rendertexture");
 
             //Set the destination camera to output on the original portal's texture
-            _destination._portalCamera.targetTexture = this._portalRenderTexture;
-            this._portalRenderer.material.SetTexture("_MainTex", _portalRenderTexture);
+            _destination._portalCamera.targetTexture = _portalRenderTexture;
+            _portalRenderer.material.SetTexture("_MainTex", _portalRenderTexture);
         }
 
         private void PortalEnter(Collider player) {
